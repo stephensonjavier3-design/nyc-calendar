@@ -1,2 +1,1176 @@
-# nyc-calendar
-National Youth Council 2026 Events Calendar
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Youth Council — Calendar 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0A1628;
+    --deep: #0D2042;
+    --royal: #1A3A6E;
+    --gold: #C8962A;
+    --gold-light: #E8B84B;
+    --gold-pale: #F5DFA0;
+    --cream: #FAF6EE;
+    --white: #FFFFFF;
+    --accent1: #E05C3A;
+    --accent2: #2E9B8F;
+    --accent3: #7B4FBF;
+    --accent4: #D4607A;
+    --text-dark: #0A1628;
+    --text-mid: #3A5280;
+    --text-light: #8BA0C0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 10% 20%, rgba(200,150,42,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(26,58,110,0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(10,22,40,0.9) 0%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  /* ============ HEADER ============ */
+  header {
+    text-align: center;
+    padding: 52px 0 40px;
+    position: relative;
+  }
+
+  .org-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(200,150,42,0.12);
+    border: 1px solid rgba(200,150,42,0.35);
+    border-radius: 40px;
+    padding: 8px 22px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  .org-badge::before {
+    content: '✦';
+    font-size: 9px;
+  }
+
+  .org-badge::after {
+    content: '✦';
+    font-size: 9px;
+  }
+
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 8vw, 90px);
+    font-weight: 700;
+    line-height: 0.95;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: -1px;
+  }
+
+  header h1 span {
+    color: var(--gold-light);
+    font-style: italic;
+  }
+
+  .header-year {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 12vw, 140px);
+    line-height: 1;
+    letter-spacing: 8px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .header-sub {
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    font-weight: 300;
+  }
+
+  .gold-divider {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 28px auto;
+  }
+
+  /* ============ STATS BAR ============ */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 52px;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    padding: 18px 36px;
+    border-right: 1px solid rgba(200,150,42,0.2);
+    text-align: center;
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    color: var(--gold-light);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+
+  /* ============ UPCOMING HIGHLIGHT ============ */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(200,150,42,0.4), transparent);
+  }
+
+  /* ============ CALENDAR GRID ============ */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 60px;
+  }
+
+  @media (max-width: 1100px) { .calendar-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 750px)  { .calendar-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px)  { .calendar-grid { grid-template-columns: 1fr; } }
+
+  .month-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .month-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(200,150,42,0.4);
+    box-shadow: 0 16px 48px rgba(200,150,42,0.12);
+  }
+
+  .month-card.has-events .month-header::after {
+    content: '';
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold-light);
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  .month-header {
+    padding: 14px 16px 12px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .month-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.5px;
+  }
+
+  .month-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: rgba(200,150,42,0.3);
+    line-height: 1;
+  }
+
+  .month-divider {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(200,150,42,0.3), transparent);
+    margin: 0 16px;
+  }
+
+  .days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 8px 10px 4px;
+    gap: 1px;
+  }
+
+  .day-label {
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    padding: 2px 0;
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 4px 10px 14px;
+    gap: 1px;
+  }
+
+  .day-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    position: relative;
+    cursor: default;
+  }
+
+  .day-cell.empty { color: transparent; }
+
+  .day-cell.today {
+    background: var(--gold);
+    color: var(--navy);
+    font-weight: 700;
+    border-radius: 50%;
+  }
+
+  .day-cell.has-event {
+    background: rgba(200,150,42,0.18);
+    color: var(--gold-light);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .day-cell.has-event:hover {
+    background: rgba(200,150,42,0.35);
+  }
+
+  .day-cell.event-range {
+    background: rgba(200,150,42,0.08);
+    color: var(--gold-pale);
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .day-cell.range-start { border-radius: 50% 4px 4px 50%; }
+  .day-cell.range-end   { border-radius: 4px 50% 50% 4px; }
+
+  .day-cell.weekend {
+    color: rgba(255,255,255,0.45);
+  }
+
+  .day-cell.weekend.has-event,
+  .day-cell.weekend.event-range { color: var(--gold-light); }
+
+  /* Event dots */
+  .event-dot {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  /* Month event count */
+  .month-event-count {
+    font-size: 10px;
+    color: var(--gold);
+    font-weight: 600;
+    background: rgba(200,150,42,0.15);
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+
+  /* ============ EVENTS LIST ============ */
+  .events-section {
+    margin-bottom: 60px;
+  }
+
+  .events-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .timeline-month {
+    margin-bottom: 8px;
+  }
+
+  .timeline-month-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    padding: 12px 0 6px;
+    border-bottom: 1px solid rgba(200,150,42,0.2);
+    margin-bottom: 2px;
+  }
+
+  .event-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 16px;
+    align-items: start;
+    padding: 14px 16px;
+    border-radius: 10px;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .event-row::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+    background: var(--event-color, var(--gold));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .event-row:hover {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .event-row:hover::before { opacity: 1; }
+
+  .event-date-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 8px 6px;
+    min-width: 72px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .badge-day {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--event-color, var(--gold-light));
+  }
+
+  .badge-month {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  .event-info { flex: 1; }
+
+  .event-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .event-venue {
+    font-size: 12px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .event-venue::before {
+    content: '◎';
+    font-size: 9px;
+    color: var(--event-color, var(--gold));
+  }
+
+  .event-type-pill {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(200,150,42,0.12);
+    color: var(--event-color, var(--gold-light));
+    border: 1px solid rgba(200,150,42,0.25);
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+
+  /* ============ FEATURED EVENTS ============ */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 60px;
+  }
+
+  @media (max-width: 900px) { .featured-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 580px) { .featured-grid { grid-template-columns: 1fr; } }
+
+  .featured-card {
+    border-radius: 20px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .featured-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--card-bg, rgba(200,150,42,0.07));
+  }
+
+  .featured-card > * { position: relative; }
+
+  .featured-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--card-color, var(--gold));
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .featured-label::before {
+    content: '';
+    width: 20px;
+    height: 2px;
+    background: var(--card-color, var(--gold));
+    border-radius: 2px;
+  }
+
+  .featured-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .featured-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .featured-venue {
+    font-size: 12px;
+    color: var(--text-light);
+    line-height: 1.4;
+  }
+
+  .featured-big-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 100px;
+    line-height: 0.9;
+    position: absolute;
+    bottom: -10px;
+    right: -5px;
+    color: rgba(255,255,255,0.04);
+    pointer-events: none;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    text-align: center;
+    padding: 32px 0 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  footer p {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  footer strong {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* ============ MODAL ============ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,22,40,0.88);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--deep);
+    border: 1px solid rgba(200,150,42,0.3);
+    border-radius: 20px;
+    padding: 36px;
+    max-width: 480px;
+    width: 100%;
+    transform: translateY(20px);
+    transition: transform 0.3s;
+    position: relative;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: var(--white);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+
+  .modal-close:hover { background: rgba(200,150,42,0.25); }
+
+  .modal-event-type {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .modal-detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .modal-detail:last-child { border-bottom: none; }
+
+  .modal-detail-icon {
+    font-size: 16px;
+    width: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .modal-detail-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 3px;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .month-card { animation: fadeUp 0.5s ease both; }
+  .month-card:nth-child(1)  { animation-delay: 0.05s; }
+  .month-card:nth-child(2)  { animation-delay: 0.10s; }
+  .month-card:nth-child(3)  { animation-delay: 0.15s; }
+  .month-card:nth-child(4)  { animation-delay: 0.20s; }
+  .month-card:nth-child(5)  { animation-delay: 0.25s; }
+  .month-card:nth-child(6)  { animation-delay: 0.30s; }
+  .month-card:nth-child(7)  { animation-delay: 0.35s; }
+  .month-card:nth-child(8)  { animation-delay: 0.40s; }
+  .month-card:nth-child(9)  { animation-delay: 0.45s; }
+  .month-card:nth-child(10) { animation-delay: 0.50s; }
+  .month-card:nth-child(11) { animation-delay: 0.55s; }
+  .month-card:nth-child(12) { animation-delay: 0.60s; }
+
+  header { animation: fadeUp 0.6s ease; }
+  .stats-bar { animation: fadeUp 0.6s 0.15s ease both; }
+
+  @media print {
+    body { background: white; color: black; }
+    .modal-overlay { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="org-badge">National Youth Council</div>
+    <h1>Events <span>&</span> Activities</h1>
+    <span class="header-year">2026</span>
+    <p class="header-sub">Official Programme Calendar</p>
+    <div class="gold-divider"></div>
+  </header>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num">16</span>
+      <div class="stat-label">Total Events</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">12</span>
+      <div class="stat-label">Active Months</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">2</span>
+      <div class="stat-label">Major Camps</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">2</span>
+      <div class="stat-label">Conventions</div>
+    </div>
+  </div>
+
+  <!-- FEATURED HIGHLIGHTS -->
+  <div class="section-label">Headline Events</div>
+  <div class="featured-grid" style="margin-bottom:52px">
+
+    <div class="featured-card" style="--card-bg: rgba(224,92,58,0.08); --card-color: #E05C3A;">
+      <div class="featured-big-num">14</div>
+      <div class="featured-label">General Convention</div>
+      <div class="featured-date">Feb 14–18</div>
+      <div class="featured-title">General Convention 2026</div>
+      <div class="featured-venue">Gospel Auditorium & Frank Solomon Bent Convention Centre, Canaan</div>
+    </div>
+
+    <div class="featured-card" style="--card-bg: rgba(46,155,143,0.08); --card-color: #2E9B8F;">
+      <div class="featured-big-num">11</div>
+      <div class="featured-label">Youth Camps</div>
+      <div class="featured-date">Jul 11–25</div>
+      <div class="featured-title">Junior & Senior Youth Camps</div>
+      <div class="featured-venue">Junior: Jul 11–18 · Senior: Jul 18–25 · Face to Face</div>
+    </div>
+
+    <div class="featured-card" style="--card-bg: rgba(123,79,191,0.08); --card-color: #9B6FD4;">
+      <div class="featured-big-num">19</div>
+      <div class="featured-label">Youth Convention</div>
+      <div class="featured-date">Oct 19</div>
+      <div class="featured-title">Youth Convention 2026</div>
+      <div class="featured-venue">Venue: TBD</div>
+    </div>
+
+  </div>
+
+  <!-- CALENDAR GRID -->
+  <div class="section-label">Monthly Overview</div>
+  <div class="calendar-grid" id="calendarGrid"></div>
+
+  <!-- FULL EVENTS LIST -->
+  <div class="events-section">
+    <div class="section-label">Full Schedule</div>
+    <div class="events-timeline" id="eventsList"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p><strong>National Youth Council</strong> &nbsp;·&nbsp; Programme Calendar 2026 &nbsp;·&nbsp; All dates subject to confirmation</p>
+  </footer>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div class="modal-event-type" id="modalType"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div id="modalDetails"></div>
+  </div>
+</div>
+
+<script>
+const EVENTS = [
+  {
+    id: 1,
+    title: "Executive Meeting",
+    type: "Meeting",
+    color: "#C8962A",
+    month: 1, day: 10,
+    venue: "Grace Gospel Hall",
+    notes: ""
+  },
+  {
+    id: 2,
+    title: "General Council Meeting",
+    type: "Meeting",
+    color: "#C8962A",
+    month: 1, day: 24,
+    venue: "Calvary Gospel Hall, Christiana",
+    notes: ""
+  },
+  {
+    id: 3,
+    title: "International Youth Fellowship Meeting",
+    type: "Fellowship",
+    color: "#2E9B8F",
+    month: 2, day: 13,
+    venue: "",
+    notes: "Friday"
+  },
+  {
+    id: 4,
+    title: "General Convention 2026",
+    type: "Convention",
+    color: "#E05C3A",
+    month: 2, dayStart: 14, dayEnd: 18,
+    venue: "Gospel Auditorium & Frank Solomon Bent Convention Centre & Campsite (Canaan)",
+    notes: "Multi-day event"
+  },
+  {
+    id: 5,
+    title: "A Night of Prayer",
+    type: "Prayer",
+    color: "#7B4FBF",
+    month: 2, day: 27,
+    venue: "",
+    notes: "National Youth Events"
+  },
+  {
+    id: 6,
+    title: "Cross Country Evangelism",
+    type: "Evangelism",
+    color: "#D4607A",
+    month: 3, day: 15,
+    venue: "",
+    notes: ""
+  },
+  {
+    id: 7,
+    title: "Career Development Seminar",
+    type: "Seminar",
+    color: "#2E9B8F",
+    month: 3, day: 28,
+    venue: "",
+    notes: ""
+  },
+  {
+    id: 8,
+    title: "Camp Counsellors' Training Retreat (Online)",
+    type: "Training",
+    color: "#9B6FD4",
+    month: 4, day: 25,
+    venue: "Online",
+    notes: ""
+  },
+  {
+    id: 9,
+    title: "Camp Counsellors' Training Retreat (Face to Face)",
+    type: "Training",
+    color: "#9B6FD4",
+    month: 6, dayStart: 5, dayEnd: 7,
+    venue: "",
+    notes: "Face to Face"
+  },
+  {
+    id: 10,
+    title: "Junior Camp",
+    type: "Camp",
+    color: "#2E9B8F",
+    month: 7, dayStart: 11, dayEnd: 18,
+    venue: "",
+    notes: "Face to Face"
+  },
+  {
+    id: 11,
+    title: "Senior Camp",
+    type: "Camp",
+    color: "#2E9B8F",
+    month: 7, dayStart: 18, dayEnd: 25,
+    venue: "",
+    notes: "Face to Face"
+  },
+  {
+    id: 12,
+    title: "International Youth Fellowship Meeting",
+    type: "Fellowship",
+    color: "#2E9B8F",
+    month: 8, day: 28,
+    venue: "",
+    notes: "Friday"
+  },
+  {
+    id: 13,
+    title: "Inter-Fellowships within Each Zone",
+    type: "Fellowship",
+    color: "#2E9B8F",
+    month: 8, day: 31,
+    venue: "",
+    notes: "Deadline: By August 31"
+  },
+  {
+    id: 14,
+    title: "TSA Prayer Breakfast / Feast",
+    type: "Prayer",
+    color: "#7B4FBF",
+    month: 9, day: 26,
+    venue: "",
+    notes: ""
+  },
+  {
+    id: 15,
+    title: "Youth Convention 2026",
+    type: "Convention",
+    color: "#E05C3A",
+    month: 10, day: 19,
+    venue: "Venue: TBD",
+    notes: ""
+  },
+  {
+    id: 16,
+    title: "Training Workshops — Western Zone",
+    type: "Training",
+    color: "#9B6FD4",
+    month: 11, day: 30,
+    venue: "Western Zone",
+    notes: "Equipping with tools for moderating, evangelising, networking, exhorting & planning. Deadline: By Nov 30"
+  },
+  {
+    id: 17,
+    title: "Recruitment Drive / Chorale Audition",
+    type: "Recruitment",
+    color: "#D4607A",
+    month: 12, day: 13,
+    venue: "",
+    notes: ""
+  }
+];
+
+const MONTHS = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December"
+];
+const MONTHS_SHORT = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const DAYS_SHORT = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+
+function getDaysInMonth(month, year) {
+  return new Date(year, month, 0).getDate();
+}
+
+function getFirstDayOfMonth(month, year) {
+  return new Date(year, month - 1, 1).getDay();
+}
+
+function getEventDays(month) {
+  const result = {};
+  EVENTS.forEach(ev => {
+    if (ev.month !== month) return;
+    if (ev.day) {
+      result[ev.day] = result[ev.day] || [];
+      result[ev.day].push(ev);
+    } else if (ev.dayStart !== undefined) {
+      for (let d = ev.dayStart; d <= ev.dayEnd; d++) {
+        result[d] = result[d] || [];
+        result[d].push(ev);
+      }
+    }
+  });
+  return result;
+}
+
+function buildCalendarGrid() {
+  const grid = document.getElementById('calendarGrid');
+  for (let m = 1; m <= 12; m++) {
+    const days = getDaysInMonth(m, 2026);
+    const firstDay = getFirstDayOfMonth(m, 2026);
+    const eventDays = getEventDays(m);
+    const hasEvents = Object.keys(eventDays).length > 0;
+    const evCount = EVENTS.filter(e => e.month === m).length;
+
+    let html = `
+      <div class="month-card ${hasEvents ? 'has-events' : ''}" onclick="openMonthModal(${m})">
+        <div class="month-header" style="background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 100%)">
+          <span class="month-name">${MONTHS[m-1]}</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            ${hasEvents ? `<span class="month-event-count">${evCount} event${evCount>1?'s':''}</span>` : ''}
+            <span class="month-num">${String(m).padStart(2,'0')}</span>
+          </div>
+        </div>
+        <div class="month-divider"></div>
+        <div class="days-header">
+          ${DAYS_SHORT.map(d => `<div class="day-label">${d}</div>`).join('')}
+        </div>
+        <div class="days-grid">
+          ${Array(firstDay).fill(0).map(() => `<div class="day-cell empty">·</div>`).join('')}
+    `;
+
+    for (let d = 1; d <= days; d++) {
+      const isWeekend = ((firstDay + d - 1) % 7 === 0 || (firstDay + d - 1) % 7 === 6);
+      const evList = eventDays[d] || [];
+      const hasEvent = evList.length > 0;
+
+      // Determine if it's a range day, start, or end
+      let isRange = false, isStart = false, isEnd = false;
+      if (hasEvent) {
+        evList.forEach(ev => {
+          if (ev.dayStart !== undefined) {
+            if (d > ev.dayStart && d < ev.dayEnd) isRange = true;
+            if (d === ev.dayStart) isStart = true;
+            if (d === ev.dayEnd) isEnd = true;
+          }
+        });
+      }
+
+      let classes = 'day-cell';
+      if (isWeekend) classes += ' weekend';
+      if (hasEvent && (evList.some(e => e.day === d || e.dayStart === d))) classes += ' has-event';
+      else if (isRange) classes += ' event-range';
+      if (isStart) classes += ' range-start';
+      if (isEnd) classes += ' range-end';
+
+      const evColor = hasEvent ? evList[0].color : '';
+      const style = evColor ? `style="--event-color:${evColor}"` : '';
+      const onclick = hasEvent ? `onclick="event.stopPropagation(); openEventModal(${evList[0].id})"` : '';
+
+      html += `<div class="${classes}" ${style} ${onclick}>${d}</div>`;
+    }
+
+    html += `</div></div>`;
+    grid.innerHTML += html;
+  }
+}
+
+function buildEventsList() {
+  const list = document.getElementById('eventsList');
+  const byMonth = {};
+  EVENTS.forEach(ev => {
+    byMonth[ev.month] = byMonth[ev.month] || [];
+    byMonth[ev.month].push(ev);
+  });
+
+  Object.keys(byMonth).sort((a,b)=>a-b).forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'timeline-month';
+    div.innerHTML = `<div class="timeline-month-label">${MONTHS[m-1]}</div>`;
+
+    byMonth[m].forEach(ev => {
+      const dateStr = ev.day
+        ? String(ev.day).padStart(2,'0')
+        : `${ev.dayStart}–${ev.dayEnd}`;
+      const dateSingle = ev.day ? ev.day : ev.dayStart;
+
+      const row = document.createElement('div');
+      row.className = 'event-row';
+      row.style.setProperty('--event-color', ev.color);
+      row.style.cursor = 'pointer';
+      row.onclick = () => openEventModal(ev.id);
+      row.innerHTML = `
+        <div class="event-date-badge" style="--event-color:${ev.color}">
+          <div class="badge-day">${dateStr}</div>
+          <div class="badge-month">${MONTHS_SHORT[m-1]}</div>
+        </div>
+        <div class="event-info">
+          <div class="event-title">${ev.title}</div>
+          ${ev.venue ? `<div class="event-venue">${ev.venue}</div>` : ''}
+          ${ev.notes ? `<div class="event-venue" style="margin-top:2px;font-style:italic;">${ev.notes}</div>` : ''}
+        </div>
+        <div class="event-type-pill" style="--event-color:${ev.color}">${ev.type}</div>
+      `;
+      div.appendChild(row);
+    });
+
+    list.appendChild(div);
+  });
+}
+
+function openEventModal(id) {
+  const ev = EVENTS.find(e => e.id === id);
+  if (!ev) return;
+  document.getElementById('modalType').textContent = ev.type;
+  document.getElementById('modalTitle').textContent = ev.title;
+  document.getElementById('modalType').style.color = ev.color;
+
+  let dateText = '';
+  if (ev.day) {
+    dateText = `${MONTHS[ev.month-1]} ${ev.day}, 2026`;
+  } else {
+    dateText = `${MONTHS[ev.month-1]} ${ev.dayStart}–${ev.dayEnd}, 2026`;
+  }
+
+  let details = `
+    <div class="modal-detail">
+      <div class="modal-detail-icon">📅</div>
+      <div>
+        <div class="modal-detail-label">Date</div>
+        ${dateText}
+      </div>
+    </div>
+  `;
+
+  if (ev.venue) {
+    details += `
+      <div class="modal-detail">
+        <div class="modal-detail-icon">📍</div>
+        <div>
+          <div class="modal-detail-label">Venue</div>
+          ${ev.venue}
+        </div>
+      </div>
+    `;
+  }
+
+  if (ev.notes) {
+    details += `
+      <div class="modal-detail">
+        <div class="modal-detail-icon">ℹ️</div>
+        <div>
+          <div class="modal-detail-label">Notes</div>
+          ${ev.notes}
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById('modalDetails').innerHTML = details;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function openMonthModal(m) {
+  const monthEvents = EVENTS.filter(e => e.month === m);
+  if (monthEvents.length === 0) return;
+  if (monthEvents.length === 1) { openEventModal(monthEvents[0].id); return; }
+
+  document.getElementById('modalType').textContent = MONTHS[m-1] + ' 2026';
+  document.getElementById('modalType').style.color = '#C8962A';
+  document.getElementById('modalTitle').textContent = `${monthEvents.length} Events This Month`;
+
+  let details = monthEvents.map(ev => {
+    const dateStr = ev.day ? `${ev.day}` : `${ev.dayStart}–${ev.dayEnd}`;
+    return `
+      <div class="modal-detail" style="cursor:pointer" onclick="openEventModal(${ev.id})">
+        <div class="modal-detail-icon" style="color:${ev.color};font-size:12px;font-weight:700;font-family:'Bebas Neue',sans-serif;width:28px">${dateStr}</div>
+        <div>
+          <div class="modal-detail-label">${ev.type}</div>
+          ${ev.title}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('modalDetails').innerHTML = details;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+}
+
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('modalOverlay').classList.remove('open');
+});
+
+buildCalendarGrid();
+buildEventsList();
+</script>
+</body>
+</html>
